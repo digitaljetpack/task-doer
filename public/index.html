@@ -1,49 +1,58 @@
- <!doctype html>
- <html lang="en">
-     <head>
-     <meta charset="utf-8" />
-     <meta name="viewport" content="width=device-width, initial-scale=1" />
-     <title>Task Tracker</title>
-     <link rel="stylesheet" href="/styles.css" />
-     </head>
-     <body>
-     <header>
-     <h1>Task Tracker</h1>
-     <nav>
-     <button id="filter-all" class="active">All</button>
-     <button id="filter-active">Active</button>
-     <button id="filter-completed">Completed</button>
-     </nav>
-     </header>
-     <main>
-     <section class="card">
-     <h2>Create Task</h2>
-     <form id="create-form">
-     6
-    <div class="row">
-     <label>Title
-     <input type="text" id="title" required placeholder="e.g. Draft
-    proposal" />
-     </label>
-     <label>Commitment Date
-     <input type="date" id="commit_by" />
-     </label>
-     </div>
-     <label>Notes
-     <textarea id="notes" rows="3" placeholder="Optional details..."></
-     textarea>
-     </label>
-     <button type="submit">Add Task</button>
-     </form>
-     </section>
-     <section class="card">
-     <h2>Tasks</h2>
-     <div id="tasks"></div>
-     </section>
-     </main>
-     <footer>
-     <small>Local demo • Data stored in <code>data.sqlite</code></small>
-     </footer>
-     <script src="/app.js" type="module"></script>
-     </body>
- </html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Task Tracker</title>
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <header>
+    <h1>Task Tracker</h1>
+    <nav>
+      <button id="filter-all" class="active">All</button>
+      <button id="filter-active">Active</button>
+      <button id="filter-completed">Completed</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Create Task</h2>
+      <!-- NOTE: using explicit <label for="..."> to avoid nesting issues -->
+      <form id="create-form">
+        <div class="row">
+          <div>
+            <label for="title">Title</label>
+            <input type="text" id="title" required placeholder="e.g. Draft proposal" />
+          </div>
+          <div>
+            <label for="commit_by">Commitment Date</label>
+            <input type="date" id="commit_by" />
+          </div>
+        </div>
+
+        <div style="margin-top:10px">
+          <label for="notes">Notes</label>
+          <textarea id="notes" rows="3" placeholder="Optional details..."></textarea>
+        </div>
+
+        <div style="margin-top:12px">
+          <button id="add-btn" type="submit">Add Task</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Tasks</h2>
+      <div id="tasks"></div>
+    </section>
+  </main>
+
+  <footer>
+    <small>Local demo • Data stored in <code>data.sqlite</code></small>
+  </footer>
+
+  <script src="/app.js" type="module"></script>
+</body>
+</html>

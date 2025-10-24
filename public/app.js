@@ -58,8 +58,23 @@ form.addEventListener('submit', async (e) => {
   if (!title) return;
   await api.create({ title, notes, commit_by });
   form.reset();
-  titleEl.focus();           // <<— keep cursor ready to add another
+  titleEl.focus();        // 👈 immediately ready to add another
   render();
+});
+
+// Quick-add: pressing Enter inside Title adds the task
+titleEl.addEventListener('keydown', async (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const title = titleEl.value.trim();
+    const notes = notesEl.value.trim();
+    const commit_by = commitEl.value || null;
+    if (!title) return;
+    await api.create({ title, notes, commit_by });
+    form.reset();
+    titleEl.focus();
+    render();
+  }
 });
 
 function taskCard(t) {
@@ -115,7 +130,6 @@ function taskCard(t) {
   });
 
   right.append(commit, del);
-
   top.append(left, right);
 
   const meta = document.createElement('div');
@@ -130,7 +144,7 @@ function taskCard(t) {
   notes.value = t.notes || '';
   notes.addEventListener('change', async () => {
     await api.update(t.id, { notes: notes.value });
-    // no full re-render to keep cursor position
+    // local meta tweak so the user sees it updated without a full re-render
     meta.textContent = `Created ${new Date(t.created_at).toLocaleString()} • Updated ${new Date().toLocaleString()} ${commit.value ? `• Commit by ${commit.value}` : ''}`;
   });
 

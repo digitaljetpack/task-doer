@@ -38,14 +38,15 @@ const updateTask = db.prepare(`
 `);
 const deleteTask = db.prepare('DELETE FROM tasks WHERE id = ?');
 
-// IMPORTANT: order by when it's needed
+// UPDATED: sort by needed date, then by creation time (older first)
+// Active tasks first; tasks with a commit date before those without.
 const listTasks = db.prepare(`
   SELECT * FROM tasks
   WHERE (@completed IS NULL OR completed = @completed)
-  ORDER BY completed ASC,            -- active first
-           commit_by IS NULL,        -- with a date before no-date
-           commit_by ASC,            -- earliest needed first
-           created_at ASC            -- then older first (stable)
+  ORDER BY completed ASC,
+           commit_by IS NULL,
+           commit_by ASC,
+           created_at ASC
 `);
 
 // --- Routes ---
@@ -53,7 +54,6 @@ app.get('/api/health', (req, res) => {
   res.json({ ok: true, time: nowISO() });
 });
 
-// List tasks: /api/tasks?status=all|active|completed
 app.get('/api/tasks', (req, res) => {
   const status = (req.query.status || 'all').toString();
   let completed = null;
@@ -63,7 +63,6 @@ app.get('/api/tasks', (req, res) => {
   res.json(rows);
 });
 
-// Get one task
 app.get('/api/tasks/:id', (req, res) => {
   const id = Number(req.params.id);
   const row = selectTaskById.get(id);
@@ -71,7 +70,6 @@ app.get('/api/tasks/:id', (req, res) => {
   res.json(row);
 });
 
-// Create
 app.post('/api/tasks', (req, res) => {
   const { title, notes = '', commit_by = null } = req.body || {};
   if (!title || typeof title !== 'string') {
@@ -93,7 +91,6 @@ app.post('/api/tasks', (req, res) => {
   res.status(201).json(row);
 });
 
-// Update (partial allowed)
 app.put('/api/tasks/:id', (req, res) => {
   const id = Number(req.params.id);
   const existing = selectTaskById.get(id);
@@ -118,7 +115,6 @@ app.put('/api/tasks/:id', (req, res) => {
   res.json(row);
 });
 
-// Delete
 app.delete('/api/tasks/:id', (req, res) => {
   const id = Number(req.params.id);
   const existing = selectTaskById.get(id);
@@ -127,7 +123,6 @@ app.delete('/api/tasks/:id', (req, res) => {
   res.json({ ok: true });
 });
 
-// Fallback to frontend
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
