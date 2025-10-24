@@ -1,0 +1,17 @@
+{
+  "name": "task-tracker-express-sqlite",
+  "version": "1.0.0",
+  "description": "Local Node + Express + SQLite task tracker with browser UI",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "cross-env NODE_ENV=development node server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.5.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.1",
+    "morgan": "^1.10.0",
+    "cross-env": "^7.0.3"
+  }
+}
