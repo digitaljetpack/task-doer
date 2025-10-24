@@ -16,38 +16,41 @@
     </nav>
   </header>
 
-  <main>
-    <section class="card">
-      <h2>Create Task</h2>
-      <!-- NOTE: using explicit <label for="..."> to avoid nesting issues -->
-      <form id="create-form">
-        <div class="row">
-          <div>
-            <label for="title">Title</label>
-            <input type="text" id="title" required placeholder="e.g. Draft proposal" />
+  <div class="layout">
+    <!-- Left: editable coding titles + palette -->
+    <aside>
+      <h3>Coatings</h3>
+      <div id="palette-editor" class="palette-editor">
+        <!-- JS will inject 5 rows: color dot + editable title input -->
+      </div>
+      <small class="muted">Click a dot to set the color for new tasks. Rename titles to your taste.</small>
+    </aside>
+
+    <main>
+      <section class="card">
+        <h2>Create Task</h2>
+        <form id="create-form">
+          <div class="row">
+            <label>Title
+              <input type="text" id="title" required placeholder="e.g. Draft proposal" />
+            </label>
+            <label>Commitment Date
+              <input type="date" id="commit_by" />
+            </label>
           </div>
-          <div>
-            <label for="commit_by">Commitment Date</label>
-            <input type="date" id="commit_by" />
-          </div>
-        </div>
+          <label>Notes
+            <textarea id="notes" rows="3" placeholder="Optional details..."></textarea>
+          </label>
+          <button type="submit">Add Task</button>
+        </form>
+      </section>
 
-        <div style="margin-top:10px">
-          <label for="notes">Notes</label>
-          <textarea id="notes" rows="3" placeholder="Optional details..."></textarea>
-        </div>
-
-        <div style="margin-top:12px">
-          <button id="add-btn" type="submit">Add Task</button>
-        </div>
-      </form>
-    </section>
-
-    <section class="card">
-      <h2>Tasks</h2>
-      <div id="tasks"></div>
-    </section>
-  </main>
+      <section class="card">
+        <h2>Tasks</h2>
+        <div id="tasks"></div>
+      </section>
+    </main>
+  </div>
 
   <footer>
     <small>Local demo • Data stored in <code>data.sqlite</code></small>
