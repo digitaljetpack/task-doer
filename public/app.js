@@ -58,23 +58,8 @@ form.addEventListener('submit', async (e) => {
   if (!title) return;
   await api.create({ title, notes, commit_by });
   form.reset();
-  titleEl.focus();        // 👈 immediately ready to add another
+  titleEl.focus();
   render();
-});
-
-// Quick-add: pressing Enter inside Title adds the task
-titleEl.addEventListener('keydown', async (e) => {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    const title = titleEl.value.trim();
-    const notes = notesEl.value.trim();
-    const commit_by = commitEl.value || null;
-    if (!title) return;
-    await api.create({ title, notes, commit_by });
-    form.reset();
-    titleEl.focus();
-    render();
-  }
 });
 
 function taskCard(t) {
@@ -88,10 +73,12 @@ function taskCard(t) {
   const left = document.createElement('div');
   left.className = 'task-left';
 
+  // Keep the checkbox toggle, too
   const checkbox = document.createElement('input');
   checkbox.type = 'checkbox';
   checkbox.checked = !!t.completed;
   checkbox.addEventListener('change', async () => {
+    if (checkbox.checked) wrapper.classList.add('celebrate','completed');
     await api.update(t.id, { completed: checkbox.checked });
     render();
   });
@@ -119,6 +106,17 @@ function taskCard(t) {
     render();
   });
 
+  // NEW: Mark Complete button with green glow celebration
+  const completeBtn = document.createElement('button');
+  completeBtn.textContent = t.completed ? 'Completed' : 'Mark Complete';
+  completeBtn.className = 'success';
+  if (t.completed) completeBtn.disabled = true;
+  completeBtn.addEventListener('click', async () => {
+    wrapper.classList.add('celebrate','completed');
+    await api.update(t.id, { completed: true });
+    render();
+  });
+
   const del = document.createElement('button');
   del.textContent = 'Delete';
   del.className = 'danger';
@@ -129,7 +127,8 @@ function taskCard(t) {
     }
   });
 
-  right.append(commit, del);
+  right.append(commit, completeBtn, del);
+
   top.append(left, right);
 
   const meta = document.createElement('div');
@@ -144,7 +143,6 @@ function taskCard(t) {
   notes.value = t.notes || '';
   notes.addEventListener('change', async () => {
     await api.update(t.id, { notes: notes.value });
-    // local meta tweak so the user sees it updated without a full re-render
     meta.textContent = `Created ${new Date(t.created_at).toLocaleString()} • Updated ${new Date().toLocaleString()} ${commit.value ? `• Commit by ${commit.value}` : ''}`;
   });
 
